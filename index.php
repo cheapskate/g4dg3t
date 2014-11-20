@@ -25,12 +25,18 @@
 				}				
 		  	},
 		});
-		$("#console").height(window.innerHeight - 20);
+		
 	},2500);
+	$(window).resize(function(){
+		$("#console").height(window.innerHeight - 20);
+	});
 </script>
 </head>
 
 <body>
 <div id="console"></div>
+<script language="javascript">
+	$("#console").height(window.innerHeight - 20);
+</script>
 </body>
 </html>

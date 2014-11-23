@@ -35,16 +35,18 @@ class IRCBot {
 			}
 			if (isset($this->ex[1])) {
 				switch($this->ex[1]) {
+					case "376":
+						$this->join_channel($config['channel']);
+					break;
 					case "433":
 						$this->send_data('NICK', $config['nick2']);
-						$this->join_channel($config['channel']);
 					break;
 					case "QUIT":
 						$qID = $this->parseID($this->ex[0]);
 						if (strtolower($qID['nick']) == strtolower($config['nick'])) {
 							$this->send_data('NICK', $config['nick']);
 						}
-						$this->chat('<b>'.$qID['nick'].'</b> quit.');
+						$this->index('<b>'.$qID['nick'].'</b> quit.');
 					break;
 					case "NICK":
 						$nID = $this->parseID($this->ex[0]);
@@ -53,7 +55,7 @@ class IRCBot {
 						if (strtolower($nID['old']) == strtolower($config['nick'])) {
 							$this->send_data('NICK', $config['nick']);
 						}
-						$this->chat('<b>'.$nID['old'].'</b> change to <b>' . $nID['new'] . '</b>.');
+						$this->index('<b>'.$nID['old'].'</b> change to <b>' . $nID['new'] . '</b>.');
 					break;
 					case "JOIN":
 						$join = $this->parseID($this->ex[0]);
@@ -62,12 +64,12 @@ class IRCBot {
 							$this->send_data('MODE '.$join['chan'].' +o ' . $join['nick']);
 							$this->send_data("NOTICE",$join['nick'].' Hello.');
 						}
-						$this->chat('<b>'.$join['nick'].'</b> joined <b>'.$join['chan'] . '</b>.');
+						$this->index('<b>'.$join['nick'].'</b> joined <b>'.$join['chan'] . '</b>.');
 					break;
 					case "PART":
 						$part = $this->parseID($this->ex[0]);
 						$part['chan'] = str_replace(array(chr(10), chr(13), ':'), '', $this->ex[2]);
-						$this->chat('<b>'.$part['nick'].'</b> left <b>'.$part['chan'] . '</b>.');
+						$this->index('<b>'.$part['nick'].'</b> left <b>'.$part['chan'] . '</b>.');
 					break;
 					case "MODE":
 						$mode = $this->parseID($this->ex[0]);
@@ -81,7 +83,7 @@ class IRCBot {
 								}
 							}
 						}
-						$this->chat('<<b>'.$mode['nick'].'</b>:'.$mode['chan'].'> <b>'.$mode['mode'] . ' ' . $mode['user'] . '</b>.');
+						$this->index('<<b>'.$mode['nick'].'</b>:'.$mode['chan'].'> <b>'.$mode['mode'] . ' ' . $mode['user'] . '</b>.');
 					break;
 					case "NOTICE":
 						if (isset($this->ex[3])) {
@@ -94,7 +96,7 @@ class IRCBot {
 								}
 							}
 							$nID['msg'] = substr($nID['msg'],1,strlen($nID['msg']) - 1);
-							$this->chat('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '>:NOTICE: <b>' . $nID['msg'].'</b>');
+							$this->index('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '>:NOTICE: <b>' . $nID['msg'].'</b>');
 						}
 					break;
 					case "TOPIC":
@@ -108,7 +110,7 @@ class IRCBot {
 								}
 							}
 							$nID['msg'] = substr($nID['msg'],1,strlen($nID['msg']) - 1);
-							$this->chat('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '> sets Topic to: <b>' . $nID['msg'].'</b>');
+							$this->index('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '> sets Topic to: <b>' . $nID['msg'].'</b>');
 						}
 					break;
 					case "PRIVMSG":
@@ -152,7 +154,7 @@ class IRCBot {
 										}
 									}
 									$nID['msg'] = substr($nID['msg'],1,strlen($nID['msg']) - 1);
-									$this->chat('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '> <b>' . $nID['msg'].'</b>');
+									$this->index('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '> <b>' . $nID['msg'].'</b>');
 								break;	
 							}
 						} else {
@@ -165,7 +167,7 @@ class IRCBot {
 								}
 							}
 							$nID['msg'] = substr($nID['msg'],1,strlen($nID['msg']) - 1);
-							$this->chat('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '> <b>' . $nID['msg'].'</b>');
+							$this->index('<<b>'.$nID['nick'] . '</b>:' . $nID['chan'] . '> <b>' . $nID['msg'].'</b>');
 						}
 					break;
 				}
@@ -202,7 +204,7 @@ class IRCBot {
 			}
 			$conn->close();
 		}
-		function chat($data) {
+		function index($data) {
 			$servername = 'localhost';
 			$username = 'root';
 			$password = ''; 

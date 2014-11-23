@@ -132,6 +132,10 @@ class IRCBot {
 								case ':!dc':
 									$this->deleteChat();
 								break;
+								case ':!dbd':
+									$this->deleteChat();
+									$this->deleteLog();
+								break;
 								case ':!restart':
 									echo "<meta http-equiv=\"refresh\" content=\"5\">";
 								exit;	

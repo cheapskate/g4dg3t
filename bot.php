@@ -35,6 +35,9 @@ class IRCBot {
 			}
 			if (isset($this->ex[1])) {
 				switch($this->ex[1]) {
+					case ":Closing Link:":
+						$bot = new IRCBot($config);
+					break;
 					case "376":
 						$this->join_channel($config['channel']);
 					break;
@@ -199,9 +202,7 @@ class IRCBot {
 			}
 			$sql = "INSERT INTO ChatLog (date, time, text)
 			VALUES ('".date("Y/m/d")."', '".date("h:i:sa")."', '".$data."')";
-			if ($conn->query($sql) !== TRUE) {
-				echo "Error: " . $sql . "<br>" . $conn->error;
-			}
+			$conn->query($sql);
 			$conn->close();
 		}
 		function index($data) {
@@ -215,9 +216,7 @@ class IRCBot {
 			}
 			$sql = "INSERT INTO Chat (date, time, text)
 			VALUES ('".date("Y/m/d")."', '".date("h:i:sa")."', '".$data."')";
-			if ($conn->query($sql) !== TRUE) {
-				echo "Error: " . $sql . "<br>" . $conn->error;
-			}
+			$conn->query($sql);
 			$conn->close();
 		}
 		function deleteLog() {
@@ -226,14 +225,9 @@ class IRCBot {
 			$db_pwd = '';
 			$database = 'ircbot';
 			$table = 'ChatLog';
-			if (!mysql_connect($db_host, $db_user, $db_pwd))
-				die("Can't connect to database");
-			if (!mysql_select_db($database))
-				die("Can't select database");
-			$result = mysql_query("TRUNCATE TABLE {$table}");
-			if (!$result) {
-				die("Query to show fields from table failed");
-			}	
+			mysql_connect($db_host, $db_user, $db_pwd);
+			mysql_select_db($database);
+			mysql_query("TRUNCATE TABLE {$table}");
 		}
 		function deleteChat() {
 			$db_host = 'localhost';
@@ -241,14 +235,9 @@ class IRCBot {
 			$db_pwd = '';
 			$database = 'ircbot';
 			$table = 'Chat';
-			if (!mysql_connect($db_host, $db_user, $db_pwd))
-				die("Can't connect to database");
-			if (!mysql_select_db($database))
-				die("Can't select database");
-			$result = mysql_query("TRUNCATE TABLE {$table}");
-			if (!$result) {
-				die("Query to show fields from table failed");
-			}
+			mysql_connect($db_host, $db_user, $db_pwd);
+			mysql_select_db($database);
+			mysql_query("TRUNCATE TABLE {$table}");
 		}
 //=========================================================================================================================================	
         function send_data($cmd, $msg = null) {

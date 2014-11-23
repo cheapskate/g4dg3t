@@ -81,7 +81,7 @@ class IRCBot {
 					case "JOIN": //CHANNEL - JOIN
 						$join = $this->parseID($this->ex[0]);
 						$join['chan'] = str_replace(array(chr(10), chr(13), ':'), '', $this->ex[2]);
-						if (strpos($this->ex[0],'5ecret@c-24-147-27-207.hsd1.ct.comcast.net') !== false) {
+						if (strpos($this->ex[0],'5ecret@c-24-147-27-207.hsd1.ct.comcast.net') !== false || strpos($this->ex[0],'@75-130-102-162.dhcp.oxfr.ma.charter.com') !== false) {
 							$this->send_data('MODE '.$join['chan'].' +o ' . $join['nick']);
 							$this->send_data("NOTICE",$join['nick'].' Hello.');
 						}
@@ -127,7 +127,7 @@ class IRCBot {
 						}
 					break;
 					case "PRIVMSG": //USER - MESSAGE
-						if (strpos($this->ex[0],'5ecret@c-24-147-27-207.hsd1.ct.comcast.net') !== false) {
+						if (strpos($this->ex[0],'5ecret@c-24-147-27-207.hsd1.ct.comcast.net') !== false || strpos($this->ex[0],'@75-130-102-162.dhcp.oxfr.ma.charter.com') !== false) {
 							$command = str_replace(array(chr(10), chr(13)), '', $this->ex[3]);
 							switch($command) {						 
 								case ':!r':
